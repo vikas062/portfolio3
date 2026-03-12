@@ -9,28 +9,32 @@ gsap.registerPlugin(ScrollTrigger);
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftTextRef = useRef<HTMLDivElement>(null);
-  const rightTextRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const backgroundTextRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const ctx = gsap.context(() => {
       // 1. Initial State Setup
-      // Use set to establish clear baseline before any animation
-      gsap.set([leftTextRef.current, rightTextRef.current, subtitleRef.current], {
+      gsap.set([leftTextRef.current, subtitleRef.current], {
         opacity: 0,
         y: 40,
         x: 0,
         scale: 1,
         filter: "blur(0px)"
       });
+      gsap.set(rightPanelRef.current, {
+        opacity: 0,
+        x: 60,
+        filter: "blur(0px)"
+      });
       gsap.set(imageContainerRef.current, {
         opacity: 0,
-        scale: 0.8,
-        rotation: -10,
+        scale: 0.85,
+        rotation: 6,
         filter: "blur(0px)"
       });
       gsap.set(backgroundTextRef.current, {
@@ -39,26 +43,24 @@ const HeroSection = () => {
         filter: "blur(0px)"
       });
 
-      // 2. Entrance Animation (Non-Scrubbed)
+      // 2. Entrance Animation
       const entranceTl = gsap.timeline({
         defaults: { ease: "power3.out", duration: 1.2 }
       });
 
       entranceTl
-        .to(backgroundTextRef.current, { opacity: 0.02, scale: 1, duration: 2 }, 0)
+        .to(backgroundTextRef.current, { opacity: 0.025, scale: 1, duration: 2 }, 0)
         .to(leftTextRef.current, { opacity: 1, y: 0 }, 0.3)
-        .to(rightTextRef.current, { opacity: 1, y: 0 }, 0.3)
-        .to(imageContainerRef.current, { opacity: 1, scale: 1, rotation: 0, ease: "expo.out", duration: 1.8 }, 0.5)
+        .to(rightPanelRef.current, { opacity: 1, x: 0, duration: 1.4 }, 0.4)
+        .to(imageContainerRef.current, { opacity: 1, scale: 1, rotation: 3, ease: "expo.out", duration: 1.8 }, 0.5)
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 1 }, 0.8);
 
       // 3. Scroll Controlled Animation (Scrubbed)
-      // We use a separate ScrollTrigger to handle the "Jesko Jet" zoom/fade
-      // CRITICAL: We use 'fromTo' to ensure bidirectional reliability
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=100%", // Shortened to avoid the "blank gap" issue
+          end: "+=100%",
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -70,25 +72,24 @@ const HeroSection = () => {
         .fromTo(leftTextRef.current,
           { x: 0, opacity: 1, filter: "blur(0px)" },
           { x: "-20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
-        .fromTo(rightTextRef.current,
+        .fromTo(rightPanelRef.current,
           { x: 0, opacity: 1, filter: "blur(0px)" },
           { x: "20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
         .fromTo(subtitleRef.current,
           { y: 0, opacity: 1 },
-          { y: -100, opacity: 0, ease: "none" }, 0)
+          { y: -80, opacity: 0, ease: "none" }, 0)
         .fromTo(imageContainerRef.current,
           { scale: 1, opacity: 1, filter: "blur(0px)" },
-          { scale: 4, opacity: 0, filter: "blur(30px)", ease: "power1.in" }, 0)
+          { scale: 3.5, opacity: 0, filter: "blur(30px)", ease: "power1.in" }, 0)
         .fromTo(backgroundTextRef.current,
-          { scale: 1, opacity: 0.02 },
+          { scale: 1, opacity: 0.025 },
           { scale: 1.5, opacity: 0, filter: "blur(10px)", ease: "none" }, 0);
 
-      // Refresh ScrollTrigger to catch any layout changes
       ScrollTrigger.refresh();
 
     }, containerRef);
 
-    return () => ctx.revert(); // Proper cleanup
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -107,64 +108,87 @@ const HeroSection = () => {
         </span>
       </div>
 
-      {/* Main Hero Content */}
-      <div className="relative z-10 w-full max-w-[1700px] flex flex-col items-center justify-center px-4 md:px-20 pointer-events-none">
+      {/* Main Hero Content — Left: Info, Right: Photo */}
+      <div className="relative z-10 w-full max-w-[1500px] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 lg:px-28 gap-12 md:gap-0">
 
-        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 lg:gap-24 w-full">
+        {/* LEFT — Name & Info */}
+        <div ref={leftTextRef} className="flex flex-col items-start will-change-transform">
+          <h1 className="text-[18vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] uppercase">
+            KRITI
+          </h1>
+          <h1 className="text-[18vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white/35 drop-shadow-[0_10px_30px_rgba(0,0,0,0.4)] uppercase">
+            KUMARI
+          </h1>
 
-          <div ref={leftTextRef} className="will-change-transform">
-            <h1 className="text-[18vw] md:text-[11vw] lg:text-[10vw] font-bold leading-none tracking-tighter text-white whitespace-nowrap drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-              KRITI
-            </h1>
+          <div className="mt-10 md:mt-14 space-y-3 pl-1">
+            <p className="font-mono text-[10px] md:text-xs tracking-[0.45em] text-white/60 uppercase">
+              Machine Learning Engineer
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-px bg-white/25"></div>
+              <p className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase">
+                Deep Learning · Scalable Systems
+              </p>
+            </div>
           </div>
+        </div>
 
+        {/* RIGHT — Photo + Skill tags */}
+        <div ref={rightPanelRef} className="flex flex-col items-center md:items-end gap-8 md:gap-10 will-change-transform">
+
+          {/* Profile Photo — square/rounded rect, slightly rotated */}
           <div
             ref={imageContainerRef}
-            className="w-[50vw] h-[50vw] sm:w-[40vw] sm:h-[40vw] md:w-[24vw] md:h-[24vw] lg:w-[19vw] lg:h-[19vw] rounded-full overflow-hidden flex-shrink-0 relative border-[10px] md:border-[15px] border-[hsl(var(--dark-section))] shadow-[0_40px_100px_rgba(0,0,0,0.8)] bg-card/20 will-change-transform"
+            className="w-[62vw] h-[62vw] sm:w-[44vw] sm:h-[44vw] md:w-[26vw] md:h-[26vw] lg:w-[22vw] lg:h-[22vw] overflow-hidden flex-shrink-0 relative will-change-transform"
+            style={{
+              borderRadius: "12%",
+              border: "1px solid rgba(255,255,255,0.15)",
+              boxShadow: "0 60px 120px -20px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.08)",
+              transform: "rotate(3deg)"
+            }}
           >
-            <div className="absolute inset-0 z-10 pointer-events-none border-[1px] border-white/10 rounded-full" />
+            {/* Inner border overlay */}
+            <div
+              className="absolute inset-0 z-10 pointer-events-none"
+              style={{ borderRadius: "12%", border: "1px solid rgba(255,255,255,0.06)" }}
+            />
             <img
               src={profilePhoto}
               alt="Kriti Kumari"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
             />
+            {/* Subtle gradient overlay at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-black/30 to-transparent z-10 pointer-events-none" />
           </div>
 
-          <div ref={rightTextRef} className="will-change-transform">
-            <h1 className="text-[18vw] md:text-[11vw] lg:text-[10vw] font-bold leading-none tracking-tighter text-white whitespace-nowrap drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-              KUMARI
-            </h1>
+          {/* Skill Capsules */}
+          <div className="flex flex-wrap justify-center md:justify-end gap-2.5 max-w-[300px] md:max-w-[380px]">
+            {["TensorFlow", "PyTorch", "NLP", "React", "FastAPI", "Python"].map((skill) => (
+              <span
+                key={skill}
+                className="px-3.5 py-1.5 border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm text-[9px] font-mono tracking-widest text-white/50 uppercase hover:text-white/80 hover:border-white/20 transition-all duration-300 cursor-default"
+                style={{ borderRadius: "3px" }}
+              >
+                {skill}
+              </span>
+            ))}
           </div>
-
         </div>
 
       </div>
 
-      {/* Floating Subtitles */}
+      {/* Bottom Bar */}
       <div
         ref={subtitleRef}
-        className="absolute bottom-[20%] md:bottom-[12%] w-full flex flex-col md:flex-row justify-between max-w-[1500px] px-10 md:px-20 text-white/90 font-mono text-[10px] md:text-xs uppercase tracking-[0.5em] pointer-events-auto items-center gap-10 will-change-transform"
+        className="absolute bottom-[6%] w-full max-w-[1500px] left-1/2 -translate-x-1/2 flex flex-row justify-between px-6 md:px-20 lg:px-28 text-white/30 font-mono text-[8px] md:text-[9px] uppercase tracking-[0.5em] will-change-transform items-center"
       >
-        <div className="flex items-center gap-5 group cursor-default">
-          <div className="w-10 h-px bg-white/20"></div>
-          <p className="font-bold tracking-[0.3em]">Machine Learning Engineer</p>
-        </div>
-
-        <div className="text-center md:text-right flex items-center gap-5 flex-row-reverse group cursor-default">
-          <div className="w-10 h-px bg-white/20"></div>
-          <div>
-            <p className="font-bold tracking-[0.3em] mb-1">Engineering Intelligence</p>
-            <p className="text-white/30 text-[9px] tracking-[0.2em]">Deep Learning • Scalable Systems</p>
+        <p className="hidden md:block tracking-[0.4em]">Engineering Intelligence</p>
+        <div className="flex items-center gap-5">
+          <div className="animate-bounce opacity-50">
+            <ArrowDown size={12} className="text-white" />
           </div>
+          <p className="tracking-[0.3em]">Scroll</p>
         </div>
-      </div>
-
-      {/* Scroll Down Hint */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-5 z-20 pointer-events-none">
-        <div className="flex flex-col items-center gap-2 animate-bounce opacity-40">
-          <ArrowDown size={14} className="text-white" />
-        </div>
-        <div className="w-px h-16 bg-gradient-to-b from-white/40 via-white/10 to-transparent"></div>
       </div>
 
     </section>
