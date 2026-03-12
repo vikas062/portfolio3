@@ -1,4 +1,6 @@
 # 🚀 Kriti Kumari — AI & ML Developer Portfolio
+🌐 **Live Portfolio:**  
+https://portfolio-nine-psi-7cuxbd8ows.vercel.app/
 
 A modern, animated personal portfolio website built with **React + TypeScript + Vite**, featuring GSAP-powered scroll animations, a dark/light theme toggle, and sections showcasing projects, skills, certificates, and more.
 
