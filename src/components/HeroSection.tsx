@@ -55,35 +55,39 @@ const HeroSection = () => {
         .to(imageContainerRef.current, { opacity: 1, scale: 1, rotation: 3, ease: "expo.out", duration: 1.8 }, 0.5)
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 1 }, 0.8);
 
-      // 3. Scroll Controlled Animation (Scrubbed)
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "+=100%",
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        }
-      });
+      // 3. Scroll Controlled Animation — DESKTOP ONLY (disabled on mobile to prevent zoom covering screen)
+      const isMobile = !window.matchMedia("(min-width: 768px)").matches;
 
-      scrollTl
-        .fromTo(leftTextRef.current,
-          { x: 0, opacity: 1, filter: "blur(0px)" },
-          { x: "-20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
-        .fromTo(rightPanelRef.current,
-          { x: 0, opacity: 1, filter: "blur(0px)" },
-          { x: "20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
-        .fromTo(subtitleRef.current,
-          { y: 0, opacity: 1 },
-          { y: -80, opacity: 0, ease: "none" }, 0)
-        .fromTo(imageContainerRef.current,
-          { scale: 1, opacity: 1, filter: "blur(0px)" },
-          { scale: 3.5, opacity: 0, filter: "blur(30px)", ease: "power1.in" }, 0)
-        .fromTo(backgroundTextRef.current,
-          { scale: 1, opacity: 0.025 },
-          { scale: 1.5, opacity: 0, filter: "blur(10px)", ease: "none" }, 0);
+      if (!isMobile) {
+        const scrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "+=100%",
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          }
+        });
+
+        scrollTl
+          .fromTo(leftTextRef.current,
+            { x: 0, opacity: 1, filter: "blur(0px)" },
+            { x: "-20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
+          .fromTo(rightPanelRef.current,
+            { x: 0, opacity: 1, filter: "blur(0px)" },
+            { x: "20vw", opacity: 0, filter: "blur(20px)", ease: "none" }, 0)
+          .fromTo(subtitleRef.current,
+            { y: 0, opacity: 1 },
+            { y: -80, opacity: 0, ease: "none" }, 0)
+          .fromTo(imageContainerRef.current,
+            { scale: 1, opacity: 1, filter: "blur(0px)" },
+            { scale: 3.5, opacity: 0, filter: "blur(30px)", ease: "power1.in" }, 0)
+          .fromTo(backgroundTextRef.current,
+            { scale: 1, opacity: 0.025 },
+            { scale: 1.5, opacity: 0, filter: "blur(10px)", ease: "none" }, 0);
+      }
 
       ScrollTrigger.refresh();
 
@@ -108,23 +112,23 @@ const HeroSection = () => {
         </span>
       </div>
 
-      {/* Main Hero Content — Left: Info, Right: Photo */}
-      <div className="relative z-10 w-full max-w-[1500px] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 lg:px-28 gap-12 md:gap-0">
+      {/* Main Hero Content — Mobile: stack top-to-bottom, Desktop: left/right split */}
+      <div className="relative z-10 w-full max-w-[1500px] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 lg:px-28 gap-6 md:gap-0">
 
         {/* LEFT — Name & Info */}
-        <div ref={leftTextRef} className="flex flex-col items-start will-change-transform">
-          <h1 className="text-[18vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] uppercase">
+        <div ref={leftTextRef} className="flex flex-col items-center md:items-start will-change-transform w-full md:w-auto">
+          <h1 className="text-[15vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)] uppercase">
             KRITI
           </h1>
-          <h1 className="text-[18vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white/35 drop-shadow-[0_10px_30px_rgba(0,0,0,0.4)] uppercase">
+          <h1 className="text-[15vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] font-black leading-[0.82] tracking-tighter text-white/35 drop-shadow-[0_10px_30px_rgba(0,0,0,0.4)] uppercase">
             KUMARI
           </h1>
 
-          <div className="mt-10 md:mt-14 space-y-3 pl-1">
+          <div className="mt-5 md:mt-14 space-y-3 pl-1 text-center md:text-left">
             <p className="font-mono text-[10px] md:text-xs tracking-[0.45em] text-white/60 uppercase">
               Machine Learning Engineer
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center md:justify-start gap-4">
               <div className="w-14 h-px bg-white/25"></div>
               <p className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase">
                 Deep Learning · Scalable Systems
@@ -136,10 +140,10 @@ const HeroSection = () => {
         {/* RIGHT — Photo + Skill tags */}
         <div ref={rightPanelRef} className="flex flex-col items-center md:items-end gap-8 md:gap-10 will-change-transform">
 
-          {/* Profile Photo — square/rounded rect, slightly rotated */}
+          {/* Profile Photo — smaller on mobile */}
           <div
             ref={imageContainerRef}
-            className="w-[62vw] h-[62vw] sm:w-[44vw] sm:h-[44vw] md:w-[26vw] md:h-[26vw] lg:w-[22vw] lg:h-[22vw] overflow-hidden flex-shrink-0 relative will-change-transform"
+            className="w-[50vw] h-[50vw] sm:w-[38vw] sm:h-[38vw] md:w-[26vw] md:h-[26vw] lg:w-[22vw] lg:h-[22vw] overflow-hidden flex-shrink-0 relative will-change-transform"
             style={{
               borderRadius: "12%",
               border: "1px solid rgba(255,255,255,0.15)",
