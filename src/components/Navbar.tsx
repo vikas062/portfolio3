@@ -42,13 +42,23 @@ const Navbar = () => {
       initial={{ y: -80 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/90 backdrop-blur-md shadow-sm py-4" : "bg-transparent py-6"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? "bg-background/85 backdrop-blur-xl border-b border-foreground/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.08)] py-4"
+          : "bg-transparent py-6"
         }`}
     >
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
         <a
           href="#"
-          className={`text-2xl font-bold tracking-tighter uppercase transition-colors duration-500 ${scrolled ? "text-foreground" : "text-white"}`}
+          className={`text-2xl font-black tracking-tighter uppercase transition-all duration-500 ${
+            scrolled
+              ? "bg-clip-text text-transparent"
+              : "text-white"
+          }`}
+          style={scrolled ? {
+            backgroundImage: "linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground)/0.5) 50%, hsl(var(--foreground)) 100%)",
+            backgroundSize: "200% 100%",
+          } : {}}
         >
           Kriti
         </a>
@@ -58,10 +68,14 @@ const Navbar = () => {
             <a
               key={item.href}
               href={item.href}
-              className={`text-[11px] font-mono uppercase tracking-[0.3em] font-bold transition-all duration-500 relative group ${scrolled ? "text-foreground/70 hover:text-foreground" : "text-white/60 hover:text-white"}`}
+              className={`text-[11px] font-mono uppercase tracking-[0.3em] font-bold transition-all duration-500 relative group ${scrolled ? "text-foreground/60 hover:text-foreground" : "text-white/60 hover:text-white"}`}
             >
               {item.label}
-              <span className={`absolute -bottom-2 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${scrolled ? "bg-foreground" : "bg-white"}`} />
+              <span className={`absolute -bottom-1.5 left-0 w-0 h-[1.5px] rounded-full transition-all duration-300 group-hover:w-full ${
+                scrolled
+                  ? "bg-gradient-to-r from-foreground to-foreground/40"
+                  : "bg-gradient-to-r from-white to-white/40"
+              }`} />
             </a>
           ))}
 
