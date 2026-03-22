@@ -1,6 +1,6 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Text, OrbitControls } from "@react-three/drei";
+import { Float, Text, OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
 const AIBrain = ({ position }: { position: [number, number, number] }) => {
@@ -8,24 +8,35 @@ const AIBrain = ({ position }: { position: [number, number, number] }) => {
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.4;
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.3} floatIntensity={0.5}>
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.8}>
       <group position={position}>
         <mesh ref={meshRef}>
-          <icosahedronGeometry args={[0.6, 1]} />
+          <icosahedronGeometry args={[0.8, 4]} />
           <meshStandardMaterial
             color="#3b82f6"
             wireframe
             transparent
-            opacity={0.8}
+            opacity={0.4}
+            emissive="#3b82f6"
+            emissiveIntensity={0.5}
           />
         </mesh>
-        <Text position={[0, -1, 0]} fontSize={0.18} color="#94a3b8" anchorX="center">
-          AI Brain → Projects
+        <Sphere args={[0.4, 32, 32]}>
+          <MeshDistortMaterial
+            color="#3b82f6"
+            speed={2}
+            distort={0.4}
+            radius={0.4}
+          />
+        </Sphere>
+        <Text position={[0, -1.2, 0]} fontSize={0.2} color="#ffffff" anchorX="center" opacity={0.6}>
+          Neural Engine
         </Text>
       </group>
     </Float>
@@ -33,56 +44,46 @@ const AIBrain = ({ position }: { position: [number, number, number] }) => {
 };
 
 const FloatingFolder = ({ position }: { position: [number, number, number] }) => (
-  <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.8}>
+  <Float speed={1.5} rotationIntensity={0.4} floatIntensity={1}>
     <group position={position}>
       <mesh>
-        <boxGeometry args={[0.7, 0.5, 0.1]} />
-        <meshStandardMaterial color="#8b5cf6" transparent opacity={0.7} />
+        <boxGeometry args={[0.8, 0.6, 0.15]} />
+        <meshStandardMaterial color="#8b5cf6" transparent opacity={0.4} emissive="#8b5cf6" emissiveIntensity={0.2} />
       </mesh>
-      <mesh position={[0, 0.25, 0]}>
-        <boxGeometry args={[0.4, 0.1, 0.1]} />
-        <meshStandardMaterial color="#8b5cf6" transparent opacity={0.9} />
+      <mesh position={[0, 0.35, 0]}>
+        <boxGeometry args={[0.4, 0.1, 0.15]} />
+        <meshStandardMaterial color="#8b5cf6" transparent opacity={0.6} />
       </mesh>
-      <Text position={[0, -0.6, 0]} fontSize={0.15} color="#94a3b8" anchorX="center">
-        GitHub
+      <Text position={[0, -0.8, 0]} fontSize={0.18} color="#ffffff" anchorX="center" opacity={0.5}>
+        Repositories
       </Text>
     </group>
   </Float>
 );
 
 const Document = ({ position }: { position: [number, number, number] }) => (
-  <Float speed={1.8} rotationIntensity={0.15} floatIntensity={0.6}>
+  <Float speed={1.8} rotationIntensity={0.3} floatIntensity={0.7}>
     <group position={position}>
-      <mesh>
-        <planeGeometry args={[0.5, 0.7]} />
-        <meshStandardMaterial color="#06b6d4" transparent opacity={0.6} side={THREE.DoubleSide} />
+      <mesh rotation={[0, Math.PI / 4, 0]}>
+        <planeGeometry args={[0.6, 0.85]} />
+        <meshStandardMaterial color="#06b6d4" transparent opacity={0.4} side={THREE.DoubleSide} emissive="#06b6d4" emissiveIntensity={0.2} />
       </mesh>
-      {[0.15, 0.05, -0.05, -0.15].map((y, i) => (
-        <mesh key={i} position={[0, y, 0.01]}>
-          <planeGeometry args={[0.35, 0.03]} />
-          <meshStandardMaterial color="#06b6d4" transparent opacity={0.3} side={THREE.DoubleSide} />
-        </mesh>
-      ))}
-      <Text position={[0, -0.6, 0]} fontSize={0.15} color="#94a3b8" anchorX="center">
-        Resume
+      <Text position={[0, -0.8, 0]} fontSize={0.18} color="#ffffff" anchorX="center" opacity={0.5}>
+        Experience
       </Text>
     </group>
   </Float>
 );
 
 const Envelope = ({ position }: { position: [number, number, number] }) => (
-  <Float speed={2.2} rotationIntensity={0.25} floatIntensity={0.7}>
+  <Float speed={2.2} rotationIntensity={0.5} floatIntensity={0.9}>
     <group position={position}>
       <mesh>
-        <boxGeometry args={[0.7, 0.45, 0.05]} />
-        <meshStandardMaterial color="#3b82f6" transparent opacity={0.5} />
+        <boxGeometry args={[0.8, 0.5, 0.08]} />
+        <meshStandardMaterial color="#3b82f6" transparent opacity={0.4} emissive="#3b82f6" emissiveIntensity={0.2} />
       </mesh>
-      <mesh position={[0, 0.12, 0.03]} rotation={[Math.PI / 6, 0, 0]}>
-        <planeGeometry args={[0.7, 0.35]} />
-        <meshStandardMaterial color="#3b82f6" transparent opacity={0.3} side={THREE.DoubleSide} />
-      </mesh>
-      <Text position={[0, -0.5, 0]} fontSize={0.15} color="#94a3b8" anchorX="center">
-        Contact
+      <Text position={[0, -0.7, 0]} fontSize={0.18} color="#ffffff" anchorX="center" opacity={0.5}>
+        Connect
       </Text>
     </group>
   </Float>
@@ -118,39 +119,64 @@ const ParticleField = () => {
 
 const ThreeScene = () => {
   return (
-    <section className="section-padding relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-8">
-          <p className="text-primary font-mono text-sm tracking-widest uppercase mb-3">
-            Explore
-          </p>
-          <h2 className="text-3xl md:text-5xl font-bold">
-            Interactive <span className="text-gradient">AI World</span>
-          </h2>
-          <p className="text-sm text-muted-foreground mt-3">Drag to explore • Click objects to navigate</p>
-        </div>
+    <section className="section-padding relative min-h-screen flex items-center justify-center bg-black overflow-hidden border-y border-white/5">
+      {/* Background glow */}
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+      
+      <div className="max-w-[1400px] w-full mx-auto relative z-10 px-6">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+          <div className="flex-1 text-left">
+            <p className="text-primary font-mono text-sm tracking-[0.3em] uppercase mb-6 flex items-center gap-3">
+              <span className="w-12 h-[1px] bg-primary/50"></span> Neural Nexus
+            </p>
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8">
+              Interactive <br />
+              <span className="text-gradient">3D Multiverse</span>
+            </h2>
+            <p className="text-xl text-white/40 max-w-xl font-light leading-relaxed mb-10">
+              A spatial interpretation of my digital footprint. Explore the intersection of Artificial Intelligence, Data Engineering, and Creative Computing through this WebGL-powered ecosystem.
+            </p>
+            
+            <div className="flex flex-wrap gap-6 text-white/30 font-mono text-xs tracking-widest uppercase items-center">
+              <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Drag to rotate</span>
+              <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" /> Scroll to zoom</span>
+            </div>
+          </div>
 
-        <div className="h-[400px] md:h-[500px] glass rounded-2xl overflow-hidden">
-          <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-            <ambientLight intensity={0.3} />
-            <pointLight position={[5, 5, 5]} intensity={0.8} color="#3b82f6" />
-            <pointLight position={[-5, -5, 5]} intensity={0.4} color="#8b5cf6" />
+          <div className="w-full lg:w-3/5 h-[500px] md:h-[700px] relative group">
+            <div className="absolute inset-0 bg-blue-500/10 rounded-[3rem] blur-[100px] opacity-0 group-hover:opacity-40 transition-opacity duration-1000" />
+            
+            <div className="h-full w-full glass-card rounded-[3rem] overflow-hidden border border-white/10 relative">
+              <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+                <color attach="background" args={['#050505']} />
+                <fog attach="fog" args={['#050505', 5, 15]} />
+                
+                <ambientLight intensity={0.4} />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+                <pointLight position={[-10, -10, -10]} color="#8b5cf6" intensity={1} />
+                <pointLight position={[0, 0, 5]} color="#3b82f6" intensity={0.5} />
 
-            <AIBrain position={[-1.8, 1, 0]} />
-            <FloatingFolder position={[1.8, 1, 0]} />
-            <Document position={[-1.5, -1.2, 0]} />
-            <Envelope position={[1.5, -1.2, 0]} />
-            <ParticleField />
+                <AIBrain position={[-2.5, 1.5, 0]} />
+                <FloatingFolder position={[2.5, 1.5, 0]} />
+                <Document position={[-2.2, -1.8, 0]} />
+                <Envelope position={[2.2, -1.8, 0]} />
+                <ParticleField />
 
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              autoRotate
-              autoRotateSpeed={0.5}
-              maxPolarAngle={Math.PI / 1.5}
-              minPolarAngle={Math.PI / 3}
-            />
-          </Canvas>
+                <OrbitControls
+                  enableZoom={true}
+                  enablePan={false}
+                  autoRotate
+                  autoRotateSpeed={0.8}
+                  maxDistance={12}
+                  minDistance={4}
+                />
+              </Canvas>
+              
+              {/* Corner accents */}
+              <div className="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-white/20 rounded-tl-2xl" />
+              <div className="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-white/20 rounded-br-2xl" />
+            </div>
+          </div>
         </div>
       </div>
     </section>
