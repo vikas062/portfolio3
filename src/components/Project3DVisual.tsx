@@ -1,9 +1,20 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float } from "@react-three/drei";
 import * as THREE from "three";
 
+function useFloat(speed = 1, intensity = 0.1) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state) => {
+    if (ref.current) {
+      ref.current.position.y = Math.sin(state.clock.elapsedTime * speed) * intensity;
+      ref.current.rotation.y = state.clock.elapsedTime * 0.2;
+    }
+  });
+  return ref;
+}
+
 const ProjectObject = ({ index }: { index: number }) => {
+  const ref = useFloat(1.5, 0.12);
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -46,11 +57,7 @@ const ProjectObject = ({ index }: { index: number }) => {
     }
   };
 
-  return (
-    <Float speed={4} rotationIntensity={1} floatIntensity={2}>
-      {getGeometry()}
-    </Float>
-  );
+  return <group ref={ref}>{getGeometry()}</group>;
 };
 
 const Project3DVisual = ({ index }: { index: number }) => {

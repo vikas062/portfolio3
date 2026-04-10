@@ -1,39 +1,39 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float } from "@react-three/drei";
 import * as THREE from "three";
 
-const BrainVisual = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+// Simple float animation hook
+function useFloat(speed = 1, intensity = 0.1) {
+  const ref = useRef<THREE.Group>(null);
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.5;
+    if (ref.current) {
+      ref.current.position.y = Math.sin(state.clock.elapsedTime * speed) * intensity;
+      ref.current.rotation.y = state.clock.elapsedTime * 0.3;
     }
   });
+  return ref;
+}
+
+const BrainVisual = () => {
+  const ref = useFloat(2, 0.15);
   return (
-    <Float speed={5} rotationIntensity={2} floatIntensity={2}>
-      <mesh ref={meshRef}>
+    <group ref={ref}>
+      <mesh>
         <icosahedronGeometry args={[1, 4]} />
-        <meshStandardMaterial
-          color="#a855f7"
-          wireframe
-          transparent
-          opacity={0.3}
-          emissive="#a855f7"
-          emissiveIntensity={0.5}
-        />
+        <meshStandardMaterial color="#a855f7" wireframe transparent opacity={0.3} emissive="#a855f7" emissiveIntensity={0.5} />
       </mesh>
       <mesh>
         <sphereGeometry args={[0.4, 32, 32]} />
         <meshStandardMaterial color="#a855f7" transparent opacity={0.6} />
       </mesh>
-    </Float>
+    </group>
   );
 };
 
 const CodeVisual = () => {
+  const ref = useFloat(1.5, 0.12);
   return (
-    <Float speed={4} rotationIntensity={1.5} floatIntensity={1.5}>
+    <group ref={ref}>
       <mesh rotation={[Math.PI / 4, 0, 0]}>
         <octahedronGeometry args={[1, 0]} />
         <meshStandardMaterial color="#3b82f6" wireframe emissive="#3b82f6" emissiveIntensity={0.5} />
@@ -42,30 +42,30 @@ const CodeVisual = () => {
         <icosahedronGeometry args={[0.5, 1]} />
         <meshStandardMaterial color="#3b82f6" transparent opacity={0.4} />
       </mesh>
-    </Float>
+    </group>
   );
 };
 
 const BackendVisual = () => {
+  const ref = useFloat(1.2, 0.1);
   return (
-    <Float speed={3} rotationIntensity={1} floatIntensity={2}>
-      <group>
-        <mesh>
-          <boxGeometry args={[1, 1.2, 0.8]} />
-          <meshStandardMaterial color="#10b981" wireframe emissive="#10b981" emissiveIntensity={0.3} />
-        </mesh>
-        <mesh>
-          <boxGeometry args={[0.7, 0.9, 0.9]} />
-          <meshStandardMaterial color="#10b981" transparent opacity={0.2} />
-        </mesh>
-      </group>
-    </Float>
+    <group ref={ref}>
+      <mesh>
+        <boxGeometry args={[1, 1.2, 0.8]} />
+        <meshStandardMaterial color="#10b981" wireframe emissive="#10b981" emissiveIntensity={0.3} />
+      </mesh>
+      <mesh>
+        <boxGeometry args={[0.7, 0.9, 0.9]} />
+        <meshStandardMaterial color="#10b981" transparent opacity={0.2} />
+      </mesh>
+    </group>
   );
 };
 
 const ToolsVisual = () => {
+  const ref = useFloat(1.8, 0.1);
   return (
-    <Float speed={4} rotationIntensity={1} floatIntensity={1}>
+    <group ref={ref}>
       <mesh>
         <torusGeometry args={[0.8, 0.2, 16, 100]} />
         <meshStandardMaterial color="#f97316" emissive="#f97316" emissiveIntensity={0.3} />
@@ -74,7 +74,7 @@ const ToolsVisual = () => {
         <boxGeometry args={[0.5, 0.5, 0.5]} />
         <meshStandardMaterial color="#f97316" wireframe />
       </mesh>
-    </Float>
+    </group>
   );
 };
 
