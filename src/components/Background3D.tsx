@@ -2,7 +2,22 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Points, PointMaterial, Float, Sphere } from "@react-three/drei";
 import * as THREE from "three";
-import * as random from "maath/random/dist/maath-random.cjs";
+
+// Inline inSphere — replaces maath to avoid CJS/ESM crash
+function inSphere(array: Float32Array, { radius }: { radius: number }) {
+  for (let i = 0; i < array.length; i += 3) {
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    const r = radius * Math.cbrt(Math.random());
+    array[i]     = r * Math.sin(phi) * Math.cos(theta);
+    array[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+    array[i + 2] = r * Math.cos(phi);
+  }
+  return array;
+}
+const random = { inSphere };
 
 const Stars = (props: any) => {
   const ref = useRef<any>();
